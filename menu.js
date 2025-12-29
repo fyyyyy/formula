@@ -9,6 +9,7 @@ export const SETTINGS = {
   moveEnabled: false,
   POINT_SIZE: 0,
   LINE_COLOR: "transparent",
+  renderBackfaces: true,
 };
 
 rotateBtn.addEventListener("change", (e) => {

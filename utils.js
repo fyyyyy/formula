@@ -33,44 +33,61 @@ export function shade(
   facenormal,
   greyblend
 ) {
-  const rgbcol = [
+  const materialCol = [
     parseInt(colour[1], 16) / 15,
     parseInt(colour[2], 16) / 15,
     parseInt(colour[3], 16) / 15,
   ];
-  const rgbamb = [
+  const ambientCol = [
     parseInt(ambient[1], 16) / 15,
     parseInt(ambient[2], 16) / 15,
     parseInt(ambient[3], 16) / 15,
   ];
-  const rgblit = [
+  const lightCol = [
     parseInt(litecol[1], 16) / 15,
     parseInt(litecol[2], 16) / 15,
     parseInt(litecol[3], 16) / 15,
   ];
+
   const newcol = new Array(3);
   const lightangle = dotproduct(lightvector, facenormal);
   // Get grey color
-  const grey = rgbcol[0] * 0.299 + rgbcol[1] * 0.587 + rgbcol[2] * 0.114;
+  const grey =
+    materialCol[0] * 0.299 + materialCol[1] * 0.587 + materialCol[2] * 0.114;
 
   // Shade all r g b channels
   for (let c = 0; c < 3; c++) {
+    // Calculate light contribution for this color channel
+
     // Add ambient background effect
-    newcol[c] = rgbcol[c] * rgbamb[c];
+    newcol[c] = (materialCol[c] * ambientCol[c]) / 2;
+    // gamma correction for realistic lighting. 0 = no correction, positive: brighter, negative: darker
+    const GAMMA = 0.3;
+    // adds a small base value to prevent complete darkness
+    const OFFSET = 0; // 0.06 / 1.06;
+
     // Main light shading
+    // lightangle = how directly the light hits the surface (0-1)
     if (lightangle > 0) {
-      newcol[c] =
-        newcol[c] +
-        (Math.pow(rgbcol[c] * lightangle * rgblit[c] * intensity, 0.45) +
-          0.06 / 1.06);
+      // materialCol[c] = material's color intensity for this channel
+      // lightCol[c] = light's color intensity for this channel
+      const lighting = Math.pow(
+        materialCol[c] * lightangle * lightCol[c] * intensity,
+        1 - GAMMA
+      );
+      newcol[c] = newcol[c] + lighting + OFFSET;
     }
     // Grey fresnel effect thing
     // if (greyblend < 0) {
-    //   greyblend = 0;
+    // greyblend = 0;
     // }
     newcol[c] = newcol[c] + Math.pow(grey * (1 - greyblend), 1.2);
-    // Make it a 0-255 thing
     newcol[c] = Math.round(newcol[c] * 255);
+
+    // Make it a 0-255 thing
+    if (newcol[c] > 255) {
+      newcol[c] = 255;
+    }
   }
   // Return as rgb
   return "rgb(" + newcol[0] + "," + newcol[1] + "," + newcol[2] + ")";
