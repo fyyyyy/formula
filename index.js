@@ -62,28 +62,38 @@ function drawPoint({ x, y, z }) {
   // points disabled ?
   if (SETTINGS.POINT_SIZE === 0) return;
 
-  const s = (SETTINGS.POINT_SIZE * dz) / z;
-  ctx.fillStyle = "#FFAA00";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
+  const moved = translate_z({ x, y, z }, dz);
 
-  if (s > 0) ctx.ellipse(x, y, s, s, 0, 0, 2 * Math.PI);
+  const size = (SETTINGS.POINT_SIZE * dz) / moved.z;
+
+  if (size > 0) {
+    ctx.fillStyle = "#FFAA00";
+    ctx.beginPath();
+    const screenXY = screen(project(moved));
+    ctx.ellipse(screenXY.x, screenXY.y, size, size, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+  }
   // too close to camera ? move object away
   else moveDirection = +1;
-
-  ctx.fill();
-  ctx.closePath();
 }
 
 function drawLine(p1, p2) {
   if (SETTINGS.LINE_COLOR === "transparent") return;
-  if (p1.z < 0.01 || p2.z < 0.01) return;
-  ctx.lineWidth = dz / p1.z / 2;
+
+  const m1 = translate_z(p1, dz);
+  const m2 = translate_z(p2, dz);
+  if (m1.z < 0.01 || m2.z < 0.01) return;
+
+  ctx.lineWidth = dz / m1.z / 2;
   ctx.strokeStyle = SETTINGS.LINE_COLOR;
 
+  const s1 = screen(project(m1));
+  const s2 = screen(project(m2));
+
   ctx.beginPath();
-  ctx.moveTo(p1.x, p1.y);
-  ctx.lineTo(p2.x, p2.y);
+  ctx.moveTo(s1.x, s1.y);
+  ctx.lineTo(s2.x, s2.y);
   ctx.stroke();
 }
 
@@ -110,12 +120,16 @@ function drawTris(p1, p2, p3) {
   );
 
   // screen coordinates
-  const s1 = screen(project(translate_z(p1, dz)));
-  const s2 = screen(project(translate_z(p2, dz)));
-  const s3 = screen(project(translate_z(p3, dz)));
+  const m1 = translate_z(p1, dz);
+  const m2 = translate_z(p2, dz);
+  const m3 = translate_z(p3, dz);
 
   // too close to camera ? move object away
-  if (s1.z < 0.01 || s2.z < 0.01 || s3.z < 0.01) moveDirection = +1;
+  if (m1.z < 0.01 || m2.z < 0.01 || m3.z < 0.01) moveDirection = +1;
+
+  const s1 = screen(project(m1));
+  const s2 = screen(project(m2));
+  const s3 = screen(project(m3));
 
   ctx.lineWidth = dz / s1.z;
   ctx.beginPath();
@@ -142,8 +156,6 @@ function screen(p) {
   return {
     x: ((p.x + 1) / 2) * game.width,
     y: (1 - (p.y + 1) / 2) * game.height,
-    // z is just for later reference ( i.e. calculate size based on z )
-    z: p.z,
   };
 }
 
@@ -152,8 +164,6 @@ function project({ x, y, z }) {
   return {
     x: (x / z) * focal,
     y: (y / z) * focal,
-    // z is just for later reference ( i.e. calculate size based on z )
-    z: z,
   };
 }
 
@@ -188,7 +198,7 @@ function rotateBoth(point) {
   return rotate_xz(rotate_yz(point, angleY), angleX);
 }
 
-let moveDirection = -1;
+let moveDirection = 1;
 
 function frame() {
   const dt = 1 / FPS;
@@ -225,7 +235,7 @@ setTimeout(frame, 1000 / FPS);
 function drawVertices() {
   for (const v of vs) {
     const p = rotateBoth(v);
-    drawPoint(screen(project(translate_z(p, dz))));
+    drawPoint(p);
   }
 }
 
@@ -260,13 +270,10 @@ function drawEdges() {
     for (let i = 0; i < f.length; ++i) {
       const a = vs[f[i]];
       const b = vs[f[(i + 1) % f.length]];
-      const la = rotateBoth(a);
-      const lb = rotateBoth(b);
+      const arot = rotateBoth(a);
+      const brot = rotateBoth(b);
 
-      drawLine(
-        screen(project(translate_z(la, dz))),
-        screen(project(translate_z(lb, dz)))
-      );
+      drawLine(arot, brot);
     }
   }
 }
