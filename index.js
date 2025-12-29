@@ -119,7 +119,7 @@ function drawTris(p1, p2, p3) {
     dotProduct
   );
 
-  // screen coordinates
+  // move points along z axis
   const m1 = translate_z(p1, dz);
   const m2 = translate_z(p2, dz);
   const m3 = translate_z(p3, dz);
@@ -127,6 +127,7 @@ function drawTris(p1, p2, p3) {
   // too close to camera ? move object away
   if (m1.z < 0.01 || m2.z < 0.01 || m3.z < 0.01) moveDirection = +1;
 
+  // screen coordinates
   const s1 = screen(project(m1));
   const s2 = screen(project(m2));
   const s3 = screen(project(m3));
@@ -270,10 +271,10 @@ function drawEdges() {
     for (let i = 0; i < f.length; ++i) {
       const a = vs[f[i]];
       const b = vs[f[(i + 1) % f.length]];
-      const arot = rotateBoth(a);
-      const brot = rotateBoth(b);
+      const ra = rotateBoth(a);
+      const rb = rotateBoth(b);
 
-      drawLine(arot, brot);
+      drawLine(ra, rb);
     }
   }
 }
