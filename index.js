@@ -1,17 +1,8 @@
 const BACKGROUND = "rgba(40, 63, 86, 1)";
 
-import cube from "./models/cube.js";
-import penger from "./models/penger.js";
-import Gun from "./models/Gun.js";
-import stairs from "./models/stairs.js";
-import BirchTree_1 from "./models/BirchTree_1.js";
-import Cactus_1 from "./models/Cactus_1.js";
-import PalmTree_1 from "./models/PalmTree_1.js";
 import { shade, dotproduct, normal, normalise } from "./utils.js";
-import { SETTINGS } from "./menu.js";
+import { select, SETTINGS, models } from "./menu.js";
 
-const models = { cube, penger, Gun, stairs, BirchTree_1, Cactus_1, PalmTree_1 };
-const DEFAULT_MODEL = "stairs";
 let currentModel;
 let vs;
 let fs;
@@ -31,21 +22,10 @@ const FPS = 59.94;
 const SHADER_SETTINGS = {
   materialColor: "#36C",
   lightVector: normalise([0.5, 0, -1]),
-  lightColor: "#aa1",
+  lightColor: "#AA0",
   ambientColor: "#024",
   intensity: 1.7,
 };
-
-const select = document.getElementById("select-model");
-
-// Populate model selection dropdown
-Object.keys(models).forEach((modelName) => {
-  const option = document.createElement("option");
-  option.value = modelName;
-  option.textContent = modelName.toUpperCase();
-  if (modelName === DEFAULT_MODEL) option.selected = true;
-  select.appendChild(option);
-});
 
 select.addEventListener("change", modelChanged);
 
