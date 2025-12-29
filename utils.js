@@ -77,14 +77,17 @@ export function shade(
       );
       newcol[c] = newcol[c] + lighting + OFFSET;
     }
+
     // Grey fresnel effect thing
-    // if (greyblend < 0) {
-    // greyblend = 0;
-    // }
+    if (greyblend < 0) {
+      greyblend = 0;
+    }
     newcol[c] = newcol[c] + Math.pow(grey * (1 - greyblend), 1.2);
+
+    // Convert from 0-1 to 0-255 range
     newcol[c] = Math.round(newcol[c] * 255);
 
-    // Make it a 0-255 thing
+    // Max 255
     if (newcol[c] > 255) {
       newcol[c] = 255;
     }
