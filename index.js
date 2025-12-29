@@ -29,7 +29,7 @@ const FPS = 59.94;
 // Shader settings
 const SHADER_SETTINGS = {
   materialColor: "#36C",
-  lightVector: normalise([0.5, 0.5, -1]),
+  lightVector: normalise([0, -1, -0.5]),
   lightColor: "#aa1",
   ambientColor: "#000",
   intensity: 1.5,
@@ -42,6 +42,7 @@ Object.keys(models).forEach((modelName) => {
   const option = document.createElement("option");
   option.value = modelName;
   option.textContent = modelName.toUpperCase();
+  if (modelName === "PalmTree_1") option.selected = true;
   select.appendChild(option);
 });
 
