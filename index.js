@@ -3,16 +3,15 @@ const BACKGROUND = "rgba(40, 63, 86, 1)";
 import { shade, dotproduct, normal, normalise } from "./utils.js";
 import { selectBtn, SETTINGS, models } from "./menu.js";
 
-let currentModel;
-let vs;
-let fs;
-let dz;
-
 game.width = 800;
 game.height = 800;
 const ctx = game.getContext("2d");
 console.log(game, ctx);
 
+let currentModel;
+let vs;
+let fs;
+let dz;
 let max_dz;
 const min_dz = 0.5;
 const focal = 1.2; // Focal distance of virtual lens
@@ -45,9 +44,6 @@ function modelChanged(e) {
   // calculate max z movement based on model size
   max_dz = Math.max(dz * 2, 2);
 }
-
-let angleX = 0;
-let angleY = 0;
 
 // Initialize with the default model
 modelChanged({ target: selectBtn });
@@ -200,6 +196,8 @@ function rotateBoth(point) {
 }
 
 let moveDirection = 1;
+let angleX = 0;
+let angleY = 0;
 
 function frame() {
   const dt = 1 / FPS;
@@ -214,7 +212,7 @@ function frame() {
   if (SETTINGS.rotateEnabled) {
     // rotate model
     angleX += 0.5 * Math.PI * dt;
-    angleY += 0.05 * Math.PI * dt;
+    angleY += 0.15 * Math.PI * dt;
     // max angles to 0-2PI range
     angleX %= 2 * Math.PI;
     angleY %= 2 * Math.PI;
