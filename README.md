@@ -1,5 +1,9 @@
 # "One Formula That Demystifies 3D Graphics"
 
+Some Improvements: add model selector, more 3D models, model converter, shaders, and more
+<img width="1578" height="1596" alt="grafik" src="https://github.com/user-attachments/assets/10729a7c-3641-4914-9017-f306ef17e8d9" />
+
+
 The Source Code from this YouTube Video:
 
 [![thumbnail](./imgs/thumbnail.png)](https://www.youtube.com/watch?v=qjWkNZ0SXfo)
