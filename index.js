@@ -29,7 +29,7 @@ const FPS = 59.94;
 // Shader settings
 const SHADER_SETTINGS = {
   materialColor: "#36C",
-  lightVector: normalise([0, -1, -0.5]),
+  lightVector: normalise([0.5, 0, -1]),
   lightColor: "#aa1",
   ambientColor: "#000",
   intensity: 1.5,
