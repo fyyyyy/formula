@@ -21,3 +21,11 @@ The repo is also deployed to GitHub Pages: [https://tsoding.github.io/formula/](
 The model is provided by [https://github.com/Max-Kawula/penger-obj](https://github.com/Max-Kawula/penger-obj)
 
 [![penger-obj](./imgs/penger-obj.png)](https://github.com/Max-Kawula/penger-obj)
+
+## Convert obj to js models
+
+Run obj2js.js with node to convert an .obj into .js format
+
+```console
+node ./obj2js.js ./PalmTree_1.obj
+```
