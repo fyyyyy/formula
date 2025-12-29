@@ -2,13 +2,13 @@ const BACKGROUND = "rgba(40, 63, 86, 1)";
 let LINE_COLOR = "transparent";
 let POINT_SIZE = 0;
 
-import cube from "./cube.js";
-import penger from "./penger.js";
-import Gun from "./Gun.js";
-import stairs from "./stairs.js";
-import BirchTree_1 from "./BirchTree_1.js";
-import Cactus_1 from "./Cactus_1.js";
-import PalmTree_1 from "./PalmTree_1.js";
+import cube from "./models/cube.js";
+import penger from "./models/penger.js";
+import Gun from "./models/Gun.js";
+import stairs from "./models/stairs.js";
+import BirchTree_1 from "./models/BirchTree_1.js";
+import Cactus_1 from "./models/Cactus_1.js";
+import PalmTree_1 from "./models/PalmTree_1.js";
 import { shade, dotproduct, normal, normalise } from "./utils.js";
 
 const models = { cube, penger, Gun, stairs, BirchTree_1, Cactus_1, PalmTree_1 };
