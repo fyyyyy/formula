@@ -1,7 +1,7 @@
 const BACKGROUND = "rgba(40, 63, 86, 1)";
 
 import { shade, dotproduct, normal, normalise } from "./utils.js";
-import { select, SETTINGS, models } from "./menu.js";
+import { selectBtn, SETTINGS, models } from "./menu.js";
 
 let currentModel;
 let vs;
@@ -27,7 +27,7 @@ const SHADER_SETTINGS = {
   intensity: 1.7,
 };
 
-select.addEventListener("change", modelChanged);
+selectBtn.addEventListener("change", modelChanged);
 
 function modelChanged(e) {
   const model = e.target.value;
@@ -49,8 +49,8 @@ function modelChanged(e) {
 let angleX = 0;
 let angleY = 0;
 
-// Initialize with the first model
-modelChanged({ target: select });
+// Initialize with the default model
+modelChanged({ target: selectBtn });
 
 // Clear the canvas
 function clear() {
@@ -68,7 +68,7 @@ function drawPoint({ x, y, z }) {
   ctx.beginPath();
 
   if (s > 0) ctx.ellipse(x, y, s, s, 0, 0, 2 * Math.PI);
-  // too close to camera ?
+  // too close to camera ? move object away
   else moveDirection = +1;
 
   ctx.fill();
@@ -88,7 +88,7 @@ function drawLine(p1, p2) {
 }
 
 function drawTris(p1, p2, p3) {
-  const trinormal = normal(p1, p2, p3);
+  const trisNormal = normal(p1, p2, p3);
   // Get vector of camera to triangle
   const cameraVector = normalise([
     p1.x + p2.x + p3.x,
@@ -96,8 +96,8 @@ function drawTris(p1, p2, p3) {
     p1.z + p2.z + p3.z,
   ]);
 
-  const dotprod = dotproduct(trinormal, cameraVector);
-  if (!SETTINGS.renderBackfaces && dotprod < 0) return; // backface culling
+  const dotProduct = dotproduct(trisNormal, cameraVector);
+  if (!SETTINGS.renderBackfaces && dotProduct < 0) return; // backface culling
 
   ctx.fillStyle = shade(
     SHADER_SETTINGS.materialColor,
@@ -105,10 +105,11 @@ function drawTris(p1, p2, p3) {
     SHADER_SETTINGS.lightVector,
     SHADER_SETTINGS.lightColor,
     SHADER_SETTINGS.intensity,
-    trinormal,
-    dotprod
+    trisNormal,
+    dotProduct
   );
 
+  // screen coordinates
   const s1 = screen(project(translate_z(p1, dz)));
   const s2 = screen(project(translate_z(p2, dz)));
   const s3 = screen(project(translate_z(p3, dz)));
