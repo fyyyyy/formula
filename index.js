@@ -204,6 +204,10 @@ function rotate_yz({ x, y, z }, angle) {
   };
 }
 
+function rotateBoth(point) {
+  return rotate_xz(rotate_yz(point, angleY), angleX);
+}
+
 let moveDirection = 1;
 
 function frame() {
@@ -239,7 +243,7 @@ setTimeout(frame, 1000 / FPS);
 
 function drawVertices() {
   for (const v of vs) {
-    const p = rotate_xz(rotate_yz(v, angleY), angleX);
+    const p = rotateBoth(v);
     drawPoint(screen(project(translate_z(p, dz))));
   }
 }
@@ -253,7 +257,7 @@ function drawFaces() {
       const c = vs[f[2]];
       const d = vs[f[3]];
 
-      const [ra, rb, rc, rd] = [a, b, c, d].map(rotate);
+      const [ra, rb, rc, rd] = [a, b, c, d].map(rotateBoth);
 
       // render 2 triangles for the rectangle
       drawTris(ra, rb, rc);
@@ -263,15 +267,11 @@ function drawFaces() {
       const a = vs[f[0]];
       const b = vs[f[1]];
       const c = vs[f[2]];
-      const [ra, rb, rc] = [a, b, c].map(rotate);
+      const [ra, rb, rc] = [a, b, c].map(rotateBoth);
 
       drawTris(ra, rb, rc);
     }
   }
-}
-
-function rotate(point) {
-  return rotate_xz(rotate_yz(point, angleY), angleX);
 }
 
 function drawEdges() {
@@ -279,8 +279,8 @@ function drawEdges() {
     for (let i = 0; i < f.length; ++i) {
       const a = vs[f[i]];
       const b = vs[f[(i + 1) % f.length]];
-      const la = rotate_xz(rotate_yz(a, angleY), angleX);
-      const lb = rotate_xz(rotate_yz(b, angleY), angleX);
+      const la = rotateBoth(a);
+      const lb = rotateBoth(b);
 
       drawLine(
         screen(project(translate_z(la, dz))),
