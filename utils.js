@@ -52,7 +52,8 @@ export function shade(
   const lightangle = dotproduct(lightvector, facenormal);
   // Get grey color
   const grey = rgbcol[0] * 0.299 + rgbcol[1] * 0.587 + rgbcol[2] * 0.114;
-  // Shade all channels
+
+  // Shade all r g b channels
   for (let c = 0; c < 3; c++) {
     // Add ambient background effect
     newcol[c] = rgbcol[c] * rgbamb[c];
