@@ -30,6 +30,7 @@ Object.keys(models).forEach((modelName) => {
 
 const rotateBtn = document.getElementById("rotate");
 const move = document.getElementById("move");
+const trianglesBtn = document.getElementById("triangles");
 const pointsBtn = document.getElementById("points");
 const edgesBtn = document.getElementById("edges");
 const backfaceBtn = document.getElementById("backface");
@@ -39,6 +40,7 @@ export const SETTINGS = {
   moveEnabled: false,
   POINT_SIZE: 0,
   LINE_COLOR: "transparent",
+  renderTriangles: true,
   renderBackfaces: true,
 };
 
@@ -54,6 +56,13 @@ move.addEventListener("change", (e) => {
     SETTINGS.moveEnabled = true;
   } else {
     SETTINGS.moveEnabled = false;
+  }
+});
+trianglesBtn.addEventListener("change", (e) => {
+  if (e.target.checked) {
+    SETTINGS.renderTriangles = true;
+  } else {
+    SETTINGS.renderTriangles = false;
   }
 });
 pointsBtn.addEventListener("change", (e) => {

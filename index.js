@@ -239,6 +239,7 @@ function drawVertices() {
 }
 
 function drawFaces() {
+  if (!SETTINGS.renderTriangles) return;
   for (const f of fs) {
     if (f.length === 4) {
       // Rectangle
