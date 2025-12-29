@@ -11,6 +11,7 @@ import { shade, dotproduct, normal, normalise } from "./utils.js";
 import { SETTINGS } from "./menu.js";
 
 const models = { cube, penger, Gun, stairs, BirchTree_1, Cactus_1, PalmTree_1 };
+const DEFAULT_MODEL = "stairs";
 let currentModel;
 let vs;
 let fs;
@@ -42,7 +43,7 @@ Object.keys(models).forEach((modelName) => {
   const option = document.createElement("option");
   option.value = modelName;
   option.textContent = modelName.toUpperCase();
-  if (modelName === "PalmTree_1") option.selected = true;
+  if (modelName === DEFAULT_MODEL) option.selected = true;
   select.appendChild(option);
 });
 
