@@ -114,6 +114,9 @@ function drawTris(p1, p2, p3) {
   const s2 = screen(project(translate_z(p2, dz)));
   const s3 = screen(project(translate_z(p3, dz)));
 
+  // too close to camera ? move object away
+  if (s1.z < 0.01 || s2.z < 0.01 || s3.z < 0.01) moveDirection = +1;
+
   ctx.lineWidth = dz / s1.z;
   ctx.beginPath();
   ctx.moveTo(s1.x, s1.y);
@@ -185,7 +188,7 @@ function rotateBoth(point) {
   return rotate_xz(rotate_yz(point, angleY), angleX);
 }
 
-let moveDirection = 1;
+let moveDirection = -1;
 
 function frame() {
   const dt = 1 / FPS;
