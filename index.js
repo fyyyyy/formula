@@ -1,6 +1,4 @@
 const BACKGROUND = "rgba(40, 63, 86, 1)";
-let LINE_COLOR = "transparent";
-let POINT_SIZE = 0;
 
 import cube from "./models/cube.js";
 import penger from "./models/penger.js";
@@ -10,6 +8,7 @@ import BirchTree_1 from "./models/BirchTree_1.js";
 import Cactus_1 from "./models/Cactus_1.js";
 import PalmTree_1 from "./models/PalmTree_1.js";
 import { shade, dotproduct, normal, normalise } from "./utils.js";
+import { SETTINGS } from "./menu.js";
 
 const models = { cube, penger, Gun, stairs, BirchTree_1, Cactus_1, PalmTree_1 };
 let currentModel;
@@ -37,11 +36,6 @@ const SHADER_SETTINGS = {
 };
 
 const select = document.getElementById("select-model");
-const rotateBtn = document.getElementById("rotate");
-const move = document.getElementById("move");
-const pointsBtn = document.getElementById("points");
-const edgesBtn = document.getElementById("edges");
-const backfaceBtn = document.getElementById("backface");
 
 // Populate model selection dropdown
 Object.keys(models).forEach((modelName) => {
@@ -72,49 +66,6 @@ function modelChanged(e) {
 
 let angleX = 0;
 let angleY = 0;
-let rotateEnabled = true;
-let moveEnabled = false;
-
-rotateBtn.addEventListener("change", (e) => {
-  if (e.target.checked) {
-    rotateEnabled = true;
-  } else {
-    rotateEnabled = false;
-  }
-});
-
-move.addEventListener("change", (e) => {
-  if (e.target.checked) {
-    moveEnabled = true;
-  } else {
-    moveEnabled = false;
-  }
-});
-
-pointsBtn.addEventListener("change", (e) => {
-  if (e.target.checked) {
-    POINT_SIZE = 2;
-  } else {
-    POINT_SIZE = 0;
-  }
-});
-
-edgesBtn.addEventListener("change", (e) => {
-  if (e.target.checked) {
-    LINE_COLOR = "#0392f7";
-  } else {
-    LINE_COLOR = "transparent";
-  }
-});
-
-let renderBackfaces = true;
-backfaceBtn.addEventListener("change", (e) => {
-  if (e.target.checked) {
-    renderBackfaces = true;
-  } else {
-    renderBackfaces = false;
-  }
-});
 
 // Initialize with the first model
 modelChanged({ target: select });
@@ -127,9 +78,9 @@ function clear() {
 
 function drawPoint({ x, y, z }) {
   // points disabled ?
-  if (POINT_SIZE === 0) return;
+  if (SETTINGS.POINT_SIZE === 0) return;
 
-  const s = (POINT_SIZE * dz) / z;
+  const s = (SETTINGS.POINT_SIZE * dz) / z;
   const a = alpha(z);
   ctx.fillStyle = "#" + a + a + "88";
   ctx.lineWidth = 1;
@@ -149,10 +100,10 @@ function alpha(z) {
 }
 
 function drawLine(p1, p2) {
-  if (LINE_COLOR === "transparent") return;
+  if (SETTINGS.LINE_COLOR === "transparent") return;
   if (p1.z < 0.01 || p2.z < 0.01) return;
   ctx.lineWidth = dz / p1.z / 2;
-  ctx.strokeStyle = LINE_COLOR + alpha((p1.z + p2.z) / 2);
+  ctx.strokeStyle = SETTINGS.LINE_COLOR + alpha((p1.z + p2.z) / 2);
 
   ctx.beginPath();
   ctx.moveTo(p1.x, p1.y);
@@ -170,7 +121,7 @@ function drawTris(p1, p2, p3) {
   ]);
 
   const dotprod = dotproduct(trinormal, cameraVector);
-  if (!renderBackfaces && dotprod < 0) return; // backface culling
+  if (!SETTINGS.renderBackfaces && dotprod < 0) return; // backface culling
 
   ctx.fillStyle = shade(
     SHADER_SETTINGS.materialColor,
@@ -257,13 +208,13 @@ let moveDirection = 1;
 
 function frame() {
   const dt = 1 / FPS;
-  if (moveEnabled) {
+  if (SETTINGS.moveEnabled) {
     dz += 1 * dt * moveDirection * max_dz * 0.5;
     if (dz > max_dz) moveDirection = -1;
     if (dz < min_dz) moveDirection = +1;
   }
 
-  if (rotateEnabled) {
+  if (SETTINGS.rotateEnabled) {
     angleX += 0.5 * Math.PI * dt;
     angleY += 0.05 * Math.PI * dt;
     angleX %= 2 * Math.PI;
