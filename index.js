@@ -224,6 +224,7 @@ function frame() {
     // rotate model
     angleX += 0.5 * Math.PI * dt;
     angleY += 0.05 * Math.PI * dt;
+    // max angles to 0-2PI range
     angleX %= 2 * Math.PI;
     angleY %= 2 * Math.PI;
   }
