@@ -81,8 +81,7 @@ function drawPoint({ x, y, z }) {
   if (SETTINGS.POINT_SIZE === 0) return;
 
   const s = (SETTINGS.POINT_SIZE * dz) / z;
-  const a = alpha(z);
-  ctx.fillStyle = "#" + a + a + "88";
+  ctx.fillStyle = "#FFAA00";
   ctx.lineWidth = 1;
   ctx.beginPath();
 
@@ -94,16 +93,11 @@ function drawPoint({ x, y, z }) {
   ctx.closePath();
 }
 
-// calculate alpha value based on z distance
-function alpha(z) {
-  return ((dz / z) * 100).toString(16).padStart(2, "0").slice(0, 2);
-}
-
 function drawLine(p1, p2) {
   if (SETTINGS.LINE_COLOR === "transparent") return;
   if (p1.z < 0.01 || p2.z < 0.01) return;
   ctx.lineWidth = dz / p1.z / 2;
-  ctx.strokeStyle = SETTINGS.LINE_COLOR + alpha((p1.z + p2.z) / 2);
+  ctx.strokeStyle = SETTINGS.LINE_COLOR;
 
   ctx.beginPath();
   ctx.moveTo(p1.x, p1.y);
@@ -162,7 +156,7 @@ function screen(p) {
   return {
     x: ((p.x + 1) / 2) * game.width,
     y: (1 - (p.y + 1) / 2) * game.height,
-    // z is just for later reference ( i.e. calculate alpha based on z )
+    // z is just for later reference ( i.e. calculate size based on z )
     z: p.z,
   };
 }
@@ -172,7 +166,7 @@ function project({ x, y, z }) {
   return {
     x: (x / z) * focal,
     y: (y / z) * focal,
-    // z is just for later reference ( i.e. calculate alpha based on z )
+    // z is just for later reference ( i.e. calculate size based on z )
     z: z,
   };
 }
