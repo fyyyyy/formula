@@ -208,13 +208,16 @@ let moveDirection = 1;
 
 function frame() {
   const dt = 1 / FPS;
+
   if (SETTINGS.moveEnabled) {
+    // move model closer/further
     dz += 1 * dt * moveDirection * max_dz * 0.5;
     if (dz > max_dz) moveDirection = -1;
     if (dz < min_dz) moveDirection = +1;
   }
 
   if (SETTINGS.rotateEnabled) {
+    // rotate model
     angleX += 0.5 * Math.PI * dt;
     angleY += 0.05 * Math.PI * dt;
     angleX %= 2 * Math.PI;
@@ -243,8 +246,8 @@ function drawVertices() {
 
 function drawFaces() {
   for (const f of fs) {
-    // rectangle
     if (f.length === 4) {
+      // Rectangle
       const a = vs[f[0]];
       const b = vs[f[1]];
       const c = vs[f[2]];
@@ -255,9 +258,8 @@ function drawFaces() {
       // render 2 triangles for the rectangle
       drawTris(ra, rb, rc);
       drawTris(ra, rc, rd);
-
-      // triangle
     } else if (f.length === 3) {
+      // Triangle
       const a = vs[f[0]];
       const b = vs[f[1]];
       const c = vs[f[2]];
