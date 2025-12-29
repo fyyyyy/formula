@@ -60,11 +60,11 @@ export function shade(
     // Calculate light contribution for this color channel
 
     // Add ambient background effect
-    newcol[c] = (materialCol[c] * ambientCol[c]) / 2;
-    // gamma correction for realistic lighting. 0 = no correction, positive: brighter, negative: darker
-    const GAMMA = 0.3;
+    newcol[c] = materialCol[c] * ambientCol[c];
+    // gamma correction for realistic lighting. 1 = no correction, > 1 brighter, < 1 darker
+    const GAMMA = 1.3;
     // adds a small base value to prevent complete darkness
-    const OFFSET = 0; // 0.06 / 1.06;
+    const OFFSET = 0.06 / 1.06;
 
     // Main light shading
     // lightangle = how directly the light hits the surface (0-1)
@@ -73,7 +73,7 @@ export function shade(
       // lightCol[c] = light's color intensity for this channel
       const lighting = Math.pow(
         materialCol[c] * lightangle * lightCol[c] * intensity,
-        1 - GAMMA
+        1 / GAMMA
       );
       newcol[c] = newcol[c] + lighting + OFFSET;
     }

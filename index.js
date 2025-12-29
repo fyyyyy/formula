@@ -31,8 +31,8 @@ const SHADER_SETTINGS = {
   materialColor: "#36C",
   lightVector: normalise([0.5, 0, -1]),
   lightColor: "#aa1",
-  ambientColor: "#000",
-  intensity: 1.5,
+  ambientColor: "#024",
+  intensity: 1.7,
 };
 
 const select = document.getElementById("select-model");
