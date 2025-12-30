@@ -5,6 +5,8 @@ import stairs from "./models/stairs.js";
 import BirchTree_1 from "./models/BirchTree_1.js";
 import Cactus_1 from "./models/Cactus_1.js";
 import PalmTree_1 from "./models/PalmTree_1.js";
+import { parseOBJ } from "./utils.js";
+import { modelChanged } from "./index.js";
 
 export const models = {
   cube,
@@ -34,6 +36,7 @@ const trianglesBtn = document.getElementById("triangles");
 const pointsBtn = document.getElementById("points");
 const edgesBtn = document.getElementById("edges");
 const backfaceBtn = document.getElementById("backface");
+const fileInput = document.getElementById("file");
 
 export const SETTINGS = {
   rotateEnabled: true,
@@ -86,4 +89,32 @@ backfaceBtn.addEventListener("change", (e) => {
   } else {
     SETTINGS.renderBackfaces = false;
   }
+});
+
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const contents = event.target.result;
+    let model;
+
+    if (file.name.endsWith(".obj")) {
+      model = parseOBJ(contents);
+    } else {
+      alert("Unsupported file format. Please upload a .obj file.");
+      return;
+    }
+    // Add the new model to the models list and select it
+    models[model.name] = model;
+    const option = document.createElement("option");
+    option.value = model.name;
+    option.textContent = model.name.toUpperCase();
+    option.selected = true;
+    selectBtn.appendChild(option);
+    selectBtn.value = model.name;
+    modelChanged({ target: selectBtn });
+  };
+  reader.readAsText(file);
 });

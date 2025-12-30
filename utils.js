@@ -116,3 +116,92 @@ export function normal(point1, point2, point3) {
   const normal = normalise(crossproduct);
   return normal;
 }
+
+// Parse a Wavefront .obj file (text) into a simple JS model format.
+// Returns: {
+//   vertices: [{x,y,z}],
+//   normals: [{x,y,z}],
+//   uvs: [{u,v}],
+//   faces: [{v:[i,i,i], vn:[i,i,i]? , vt:[i,i,i]? , material:?}],
+//   materials: { mtllib?: "name" },
+// }
+export function parseOBJ(text) {
+  const lines = text.split(/\r?\n/);
+  const vertices = [];
+  const normals = [];
+  const uvs = [];
+  const faces = [];
+  const materials = {};
+  let name = "custom_model";
+  let currentMaterial = null;
+
+  const resolveIndex = (idx, arrLen) => {
+    // OBJ indices are 1-based, negatives are relative to end
+    const i = parseInt(idx, 10);
+    if (Number.isNaN(i)) return null;
+    return i > 0 ? i - 1 : arrLen + i;
+  };
+
+  for (let raw of lines) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+
+    const parts = line.split(/\s+/);
+    const type = parts[0];
+
+    if (type === "v") {
+      // vertex
+      const x = parseFloat(parts[1] || 0);
+      const y = parseFloat(parts[2] || 0);
+      const z = parseFloat(parts[3] || 0);
+      vertices.push({ x, y, z });
+    } else if (type === "vn") {
+      const x = parseFloat(parts[1] || 0);
+      const y = parseFloat(parts[2] || 0);
+      const z = parseFloat(parts[3] || 0);
+      normals.push({ x, y, z });
+    } else if (type === "vt") {
+      const u = parseFloat(parts[1] || 0);
+      const v = parseFloat(parts[2] || 0);
+      uvs.push({ u, v });
+    } else if (type === "f") {
+      // face can be v, v/vt, v//vn, v/vt/vn
+      const verticesSpec = parts.slice(1).map((token) => {
+        const comps = token.split("/");
+        return {
+          v: comps[0] ? resolveIndex(comps[0], vertices.length) : null,
+          vt: comps[1] ? resolveIndex(comps[1], uvs.length) : null,
+          vn: comps[2] ? resolveIndex(comps[2], normals.length) : null,
+        };
+      });
+
+      // triangulate polygon by fan method
+      for (let i = 1; i < verticesSpec.length - 1; i++) {
+        const a = verticesSpec[0];
+        const b = verticesSpec[i];
+        const c = verticesSpec[i + 1];
+        const face = { v: [a.v, b.v, c.v] };
+        if (a.vt !== null || b.vt !== null || c.vt !== null) {
+          face.vt = [a.vt, b.vt, c.vt];
+        }
+        if (a.vn !== null || b.vn !== null || c.vn !== null) {
+          face.vn = [a.vn, b.vn, c.vn];
+        }
+        if (currentMaterial) face.material = currentMaterial;
+
+        // diregard other data (vt, vn) for now
+        faces.push(face.v);
+      }
+    } else if (type === "usemtl") {
+      currentMaterial = parts.slice(1).join(" ") || null;
+    } else if (type === "mtllib") {
+      materials.mtllib = parts.slice(1).join(" ") || null;
+    } else if (type === "o" || type === "g") {
+      name = parts[1] || name;
+    } else {
+      // unrecognized line type - ignore
+    }
+  }
+
+  return { vs: vertices, normals, uvs, fs: faces, materials, name };
+}

@@ -28,12 +28,14 @@ const SHADER_SETTINGS = {
 
 selectBtn.addEventListener("change", modelChanged);
 
-function modelChanged(e) {
+export function modelChanged(e) {
   const model = e.target.value;
   console.log("Selected model:", model);
 
   // load selected model
   currentModel = models[model];
+  console.log(currentModel);
+
   vs = currentModel.vs;
   fs = currentModel.fs;
 
