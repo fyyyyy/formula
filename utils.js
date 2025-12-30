@@ -119,10 +119,11 @@ export function normal(point1, point2, point3) {
 
 // Parse a Wavefront .obj file (text) into a simple JS model format.
 // Returns: {
-//   vertices: [{x,y,z}],
+//   vs: [{x,y,z}],
 //   normals: [{x,y,z}],
 //   uvs: [{u,v}],
-//   faces: [{v:[i,i,i], vn:[i,i,i]? , vt:[i,i,i]? , material:?}],
+//   fs: [i,i,i],
+//   ( fs: [{v:[i,i,i], vn:[i,i,i]? , vt:[i,i,i]? , material:?}], )
 //   materials: { mtllib?: "name" },
 // }
 export function parseOBJ(text) {
